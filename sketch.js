@@ -6,15 +6,19 @@ var engine, world, backgroundImg, waterSound, backgroundMusic, cannonExplosion;
 var canvas, angle, tower, ground, cannon, boat;
 var balls = [];
 var boats = [];
-
+var score = 0; //pontuação em zero
 var boatAnimation = [];
 var boatSpritedata, boatSpritesheet;
-
 var brokenBoatAnimation = [];
 var brokenBoatSpritedata, brokenBoatSpritesheet;
+var isGameOver = false; //fim de jogo
+var isLaughing = false; //está rindo
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
+  backgroundMusic = loadSound("./assets/background_music.mp3"); //som da trilha sonora do jogo
+  pirateLaughSound = loadSound("./assets/pirate_laught.mp3");//som da risada do pirata
+  connonExplosion = loadSound("./assets/cannon_explosition.mp3");//som da explosão do canhao
   towerImage = loadImage("./assets/tower.png");
   boatSpritedata = loadJSON("assets/boat/boat.json");
   boatSpritesheet = loadImage("assets/boat/boat.png");
@@ -49,8 +53,10 @@ function setup() {
 function draw() {
   background(189);
   image(backgroundImg, 0, 0, width, height);
-
-
+  if (!backgroundMusic.isPlaying()) { //se nao esta tocando a musica da trilha sonora
+    backgroundMusic.play(); //tocar o som 
+    backgroundMusic.setVolume(0.1); //deixar o volume em 10%
+  }
   Engine.update(engine);
   ground.display();
 
@@ -141,9 +147,26 @@ function showBoats() {
 
 //liberar a bala de canhão quando soltar a tecla
 function keyReleased() {
-  if (keyCode === DOWN_ARROW) {
+  if (keyCode === DOWN_ARROW && !isGameOver) {
+    cannonEplosion.play(); //toca o som da explosão 
     balls[balls.length - 1].shoot();
   }
 }
+ function gameOver(){
+   swal(   {
+     title: `Fim de Jogo!!!`, 
+     text: "Obrigado por jogar!!", 
+     imageUrl: 
+     "https://raw.githubusercontent.com/whitehatjr/PiratesInvasion/main/assets/boat.png", 
+     imageSize: "150x150", 
+     confirmButtonText: "Reinicie o Jogo" 
+   }, 
+      function(isConfirm) { 
+        if (isConfirm) { 
+          location.reload(); 
+        } 
+      }
+     );
+ }
 
 
